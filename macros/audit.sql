@@ -1,8 +1,8 @@
 {% macro get_audit_relation() %}
-    {%- set audit_table = 
+    {%- set audit_table =
         api.Relation.create(
-            identifier='dbt_audit_log', 
-            schema=target.schema~'_meta', 
+            identifier='dbt_audit_log',
+            schema=target.schema~'_logs',
             type='table'
         ) -%}
     {{ return(audit_table) }}
@@ -11,24 +11,24 @@
 
 {% macro get_audit_schema() %}
     {% set audit_table = logging.get_audit_relation() %}
-    {{ return(audit_table.include(schema=True, identifier=False)) }}    
+    {{ return(audit_table.include(schema=True, identifier=False)) }}
 {% endmacro %}
 
 
 {% macro log_audit_event(event_name) %}
 
     insert into {{ logging.get_audit_relation() }} (
-        event_name, 
-        event_timestamp, 
-        event_schema, 
+        event_name,
+        event_timestamp,
+        event_schema,
         event_model,
         invocation_id
-        ) 
-    
+        )
+
     values (
-        '{{ event_name }}', 
-        {{dbt_utils.current_timestamp_in_utc()}}, 
-        '{{ this.schema }}', 
+        '{{ event_name }}',
+        {{dbt_utils.current_timestamp_in_utc()}},
+        '{{ this.schema }}',
         '{{ this.name }}',
         '{{ invocation_id }}'
         )
