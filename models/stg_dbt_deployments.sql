@@ -10,9 +10,10 @@ select
   min(case when event_name = 'run completed' then event_timestamp end) as deployment_completed_at,
   datediff('seconds',deployment_started_at,deployment_completed_at) as deployment_time_seconds,
   count(distinct case when event_name ilike '%model%' then event_model end) as models_deployed,
-  is_full_refresh
+  is_full_refresh,
+  build_name
 from events
-group by invocation_id,is_full_refresh
+group by invocation_id,is_full_refresh,build_name
 )
 
 select *
