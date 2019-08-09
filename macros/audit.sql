@@ -23,7 +23,8 @@
         event_schema,
         event_model,
         is_full_refresh,
-        invocation_id
+        invocation_id,
+        build_name
         )
 
     values (
@@ -32,7 +33,8 @@
         {% if variable != None %}'{{ schema }}'{% else %}null::varchar(512){% endif %},
         {% if variable != None %}'{{ relation }}'{% else %}null::varchar(512){% endif %},
         '{{ is_full_refresh }}',
-        '{{ invocation_id }}'
+        '{{ invocation_id }}',
+        '{{ var('build_name', '') }}'
         )
 
 {% endmacro %}
@@ -56,7 +58,8 @@
        event_schema     varchar(512),
        event_model      varchar(512),
        is_full_refresh  boolean,
-       invocation_id    varchar(512)
+       invocation_id    varchar(512),
+       build_name       varchar(512)
     )
   {% else %}
     select 1
